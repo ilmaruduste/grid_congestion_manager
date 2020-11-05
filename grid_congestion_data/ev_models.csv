@@ -1,0 +1,5 @@
+,models,battery_size,charge_power,efficiency
+0,Tesla Model S,72.5,16.5,0.175
+1,Nissan Leaf e+,56.0,6.6,0.172
+2,Renault Zoe,41.0,22.0,0.164
+3,Volkswagen ID.3,45.0,7.2,0.161
