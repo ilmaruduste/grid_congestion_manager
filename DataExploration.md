@@ -40,7 +40,7 @@
   *  charge_need -- how much energy does the car during the ‘time’. 
   *  cadaster -- cadaster unit number
 
-### ev_home locations
+### ev_home_locations
 ![ev_home_locations](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/ev_home_locations.png?raw=true)
   *  address -- Home location
   *  cadaster -- Cadaster unit based on Maa-amet cadaster definition
@@ -55,16 +55,16 @@
   *  time -- hour of day.
   *  baseload -- baseload (electricity current in kWh) at the grid object on that cadaster unit.
 
-### ev models
-![ev models](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/ev models.png?raw=true)
+### ev_models
+![ev_models](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/ev_models.png?raw=true)
   *  models -- name of the EV model
   *  battery_size -- the battery size in kW/h
   *  charge_power -- maximum AC charging power in kW
   *  efficiency -- energy consumption kWh/km
 
 
-### Kaart Tartust
-![Kaart tartust](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/kaart tartust.png?raw=true)
+### Map of Tartu with ev home locations, public chargers locations and grid locations
+![Map of Tartu](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/tartu.png?raw=true)
 ![layers](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/layers.png?raw=true)
 
 
