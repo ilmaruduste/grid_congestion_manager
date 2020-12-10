@@ -1,7 +1,7 @@
 # Grid Congestion Manager
 
 
-## Ülesanded:
+## Tasks:
  * Prepare the datasets for analysis;
  * Develop a prediction model that forecasts the grid load in specific location based on EV charging statistics.
  * Develop a model for smart charging – a model that divides the electricity consumption of EVs such that the limits of the grid won’t be exceeded and all of the EV owners receive the similar experience.
@@ -10,7 +10,7 @@
  * shows the optimized charging schedule if there is a threat of grid congestion.
 
 
-## Failid
+## Files
 ### grid_locations: (alajaamad)
 ![grid_locations (alajaamad)](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/grid_locations.png?raw=true)
   *  address -- address
@@ -68,29 +68,46 @@
 ![layers](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/layers.png?raw=true)
 
 
-## Sammud:
+## Sammud / Steps:
 
-  *  Ühendada omavahel laadimisjaamad ja alajaamad
-  *  Uurida Kristjanilt täpsemalt kadastrite kohta
+  *  Ühendada omavahel laadimisjaamad ja alajaamad / Connect chargers locations and grids locations
+  *  Peale ühendamist uurida, kuidas laadimine jaamade võrgu koormust mõjutab. / Find out how charging affects gridloads
+  *  Siit saaks siis edasi ennustamise peale mõelda / Then we can think about predicting
+  *  Andmed pandasesse lugeda / Read data with pandas
+  *  Koordinaadid ümardada / Round coordinates
+  *  Ühendada kodu/avalikud laadijad alajaamadega / Connect home/public chargers and grids
+    *  kõige lähemasse alajaama / to the closest grids
+  *  DATA
+    *  What the model takes in : a grid
+    *  Training data : ev_history + ev_models
+    *  
 
-  *  Peale ühendamist uurida, kuidas laadimine jaamade võrgu koormust mõjutab?
-  *  Siit saaks siis edasi ennustamise peale mõelda
-  *  Andmed pandasesse lugeda
-  *  Koordinaadid ümardada
-  *  Ühendada kodu/avalikud laadijad alajaamadega
-    *  kõige lähemasse alajaama
-
-
-## Küsimused:
-  *  Kas laadimisjaamad on seotud geograafiliselt kõige lähema alajaamaga? 
-  (nt kodu kadastrid ei lange kokku alajaamade omadega)
-
-  *  EV home loc tabelis on kadastrid, kas see viitab alajaama kadastrile? Vist jah 
-
-  *  Kuidas on seotud omavahel kadastrid numbrid ja alajaamad?
-
-  *  Kas gridload.baseload arvestab juba ev_historys toodud laadimistega, või laadimised on lisaks baseloadile?
 
 ## INSIGHT:
 
-  *  BASELOAD + AUTODE LAADIMINE <= MAX CURRENT (POWER)
+  *  BASELOAD + CHARGING CARS <= MAX CURRENT (POWER)
+
+
+
+## Info/Suggestions/Links we have gotten from asking help
+
+  *  What can be done with such type of data : https://ieeexplore.ieee.org/abstract/document/7796887
+  *  Classical time-series : ARIMA as a baseline
+    *  With R code, a master's thesis with ARIMA (predicting hospital's patients) https://dspace.ut.ee/bitstream/handle/10062/64858/soll_hanna_liisa_msc_2019.pdf?sequence=1&isAllowed=y
+    *  Seasonal ARIMA models : https://otexts.com/fpp2/seasonal-arima.html
+  *  With ensembling of multiple LSTMs and MLPs - must make sure, that data is not overfitted
+  *  
+  *  
+  *  
+
+
+
+## What we found ourselves / articles / thoughts about what to try
+
+  *  Introduction to Time Series Analysis: Time-Series Forecasting Machine learning Methods & Models https://medium.com/analytics-steps/introduction-to-time-series-analysis-time-series-forecasting-machine-learning-methods-models-ecaa76a7b0e3 
+  *  How (not) to use Machine Learning for time series forecasting: Avoiding the pitfalls https://towardsdatascience.com/how-not-to-use-machine-learning-for-time-series-forecasting-avoiding-the-pitfalls-19f9d7adf424
+  *  Randomforest <3
+  *  Regression with grid and hours
+  *  Use X ja Y coordinates to predict charging need
+  *  Time series
+  *  
