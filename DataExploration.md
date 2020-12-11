@@ -70,17 +70,17 @@
 
 ## Sammud / Steps:
 
-  *  Ühendada omavahel laadimisjaamad ja alajaamad / Connect chargers locations and grids locations
-  *  Peale ühendamist uurida, kuidas laadimine jaamade võrgu koormust mõjutab. / Find out how charging affects gridloads
-  *  Siit saaks siis edasi ennustamise peale mõelda / Then we can think about predicting
-  *  Andmed pandasesse lugeda / Read data with pandas
-  *  Koordinaadid ümardada / Round coordinates
-  *  Ühendada kodu/avalikud laadijad alajaamadega / Connect home/public chargers and grids
-    *  kõige lähemasse alajaama / to the closest grids
-  *  DATA
-    *  What the model takes in : a grid
-    *  Training data : ev_history + ev_models
-    *  
+  * Ühendada omavahel laadimisjaamad ja alajaamad / Connect chargers locations and grids locations
+  * Peale ühendamist uurida, kuidas laadimine jaamade võrgu koormust mõjutab. / Find out how charging affects gridloads
+  * Siit saaks siis edasi ennustamise peale mõelda / Then we can think about predicting
+  * Andmed pandasesse lugeda / Read data with pandas
+  * Koordinaadid ümardada / Round coordinates
+  * Ühendada kodu/avalikud laadijad alajaamadega / Connect home/public chargers and grids
+    * kõige lähemasse alajaama / to the closest grids
+  * DATA
+    * What the model takes in : a grid
+    * Training data : ev_history + ev_models
+  *  
 
 
 ## INSIGHT:
@@ -91,11 +91,11 @@
 
 ## Info/Suggestions/Links we have gotten from asking help
 
-  *  What can be done with such type of data : https://ieeexplore.ieee.org/abstract/document/7796887
-  *  Classical time-series : ARIMA as a baseline
-    *  With R code, a master's thesis with ARIMA (predicting hospital's patients) https://dspace.ut.ee/bitstream/handle/10062/64858/soll_hanna_liisa_msc_2019.pdf?sequence=1&isAllowed=y
-    *  Seasonal ARIMA models : https://otexts.com/fpp2/seasonal-arima.html
-  *  With ensembling of multiple LSTMs and MLPs - must make sure, that data is not overfitted
+  * What can be done with such type of data : https://ieeexplore.ieee.org/abstract/document/7796887
+  * Classical time-series : ARIMA as a baseline
+    * With R code, a master's thesis with ARIMA (predicting hospital's patients) https://dspace.ut.ee/bitstream/handle/10062/64858/soll_hanna_liisa_msc_2019.pdf?sequence=1&isAllowed=y
+    * Seasonal ARIMA models : https://otexts.com/fpp2/seasonal-arima.html
+  * With ensembling of multiple LSTMs and MLPs - must make sure, that data is not overfitted
   *  
   *  
   *  
