@@ -51,10 +51,10 @@ tartu_voronoi_spdf@data$load_ratio_percent <- as.numeric(tartu_voronoi_spdf@data
 grid_locations_spdf@data$load_ratio_percent <- as.numeric(grid_locations_spdf@data$field_1/grid_locations_spdf@data$max_curren*100)
 
 # Create a color palette for the map:
-# 
-
 mybins_tartu <- c(0, 25, 50, 75, 100, 125, 150, 200)
 mybins_load_ratio <- c(0, 25, 50, 75, 100, 125, 150, 200, Inf)
+
+# https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html#:~:text=The%20RColorBrewer%20package%20offers%20several%20color%20palette%20for%20R.&text=There%20are%203%20types%20of,colors%20for%20high%20data%20values.
 
 mypalette_tartu <- colorBin( 
   palette="YlOrBr", 
@@ -63,7 +63,10 @@ mypalette_tartu <- colorBin(
   bins=mybins_tartu)
 
 mypalette_load_ratio <- colorBin( 
-  palette="YlOrBr", 
+  palette="RdYlGn", 
+  # palette="Spectral", 
+  # palette="RdYlBu", 
+  reverse = TRUE,
   domain=tartu_voronoi_spdf@data$load_ratio_percent, 
   na.color="transparent", 
   bins=mybins_load_ratio
@@ -134,7 +137,7 @@ m <- leaflet() %>%
   # Adding voronoi polygons - Absolute values
   addPolygons(
     data = tartu_voronoi_spdf,
-    fillColor = ~mypalette_load_ratio(field_1), 
+    fillColor = ~mypalette_tartu(field_1), 
     stroke=TRUE, 
     fillOpacity = 0.6, 
     color="white", 
@@ -206,18 +209,23 @@ m <- leaflet() %>%
              position = "bottomleft", 
              group = "Predicted Load Ratio Percent") %>% 
   
-  # # Adding legend
-  # addLegend( pal=mypalette_tartu, 
-  #            values=tartu_voronoi_spdf@data$field_1, 
-  #            opacity=0.9, title = "Absolute Predicted Loads (kWh)", 
-  #            position = "bottomleft", 
-  #            group = "Absolute Predicted Loads") %>%
+  # Adding legend
+  addLegend( pal=mypalette_tartu, 
+             values=tartu_voronoi_spdf@data$field_1, 
+             opacity=0.9, title = "Absolute Predicted Loads (kWh)", 
+             position = "bottomright", 
+             group = "Absolute Predicted Loads") %>%
   
   addLayersControl(
     baseGroups = c("Predicted Load Ratio Percent", "Absolute Predicted Loads"),
     overlayGroups = c("Electricity Grid Stations", "Public EV Chargers", "Home EV Chargers"),
     options = layersControlOptions(collapsed = FALSE)
-  )  
+  )  %>% 
+  hideGroup("Public EV Chargers") %>% 
+  hideGroup("Home EV Chargers") 
+  
+
+
   
 
 m  
