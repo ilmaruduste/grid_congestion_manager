@@ -80,13 +80,11 @@
   * DATA
     * What the model takes in : a grid
     * Training data : ev_history + ev_models
-  *  
 
 
 ## INSIGHT:
 
   *  BASELOAD + CHARGING CARS <= MAX CURRENT (POWER)
-
 
 
 ## Info/Suggestions/Links we have gotten from asking help
@@ -96,18 +94,23 @@
     * With R code, a master's thesis with ARIMA (predicting hospital's patients) https://dspace.ut.ee/bitstream/handle/10062/64858/soll_hanna_liisa_msc_2019.pdf?sequence=1&isAllowed=y
     * Seasonal ARIMA models : https://otexts.com/fpp2/seasonal-arima.html
   * With ensembling of multiple LSTMs and MLPs - must make sure, that data is not overfitted
-  *  
-  *  
-  *  
-
 
 
 ## What we found ourselves / articles / thoughts about what to try
 
   *  Introduction to Time Series Analysis: Time-Series Forecasting Machine learning Methods & Models https://medium.com/analytics-steps/introduction-to-time-series-analysis-time-series-forecasting-machine-learning-methods-models-ecaa76a7b0e3 
   *  How (not) to use Machine Learning for time series forecasting: Avoiding the pitfalls https://towardsdatascience.com/how-not-to-use-machine-learning-for-time-series-forecasting-avoiding-the-pitfalls-19f9d7adf424
-  *  Randomforest <3
   *  Regression with grid and hours
-  *  Use X ja Y coordinates to predict charging need
-  *  Time series
   *  
+  
+## What we tried, but did not work
+
+  * Randomforest -> 
+  * Using X ja Y coordinates -> 
+    * without baseload: Day average | R2 -1.0172451435923011 | RMSE 46.804634159539376
+    * with baseload: Day average | R2 0.8887420302927834 | RMSE 10.423725187528838
+  * ... To be finished
+  
+## What we did
+
+  * ... To be finished
