@@ -68,7 +68,7 @@
 ![layers](https://github.com/ilmaruduste/grid_congestion_manager/blob/main/grid_congestion_data%20pictures/layers.png?raw=true)
 
 
-## Sammud / Steps:
+## Sammud / Steps that were written down in the beginning of the project:
 
   * Ühendada omavahel laadimisjaamad ja alajaamad / Connect chargers locations and grids locations
   * Peale ühendamist uurida, kuidas laadimine jaamade võrgu koormust mõjutab. / Find out how charging affects gridloads
@@ -80,34 +80,8 @@
   * DATA
     * What the model takes in : a grid
     * Training data : ev_history + ev_models
-  *  
 
 
 ## INSIGHT:
 
   *  BASELOAD + CHARGING CARS <= MAX CURRENT (POWER)
-
-
-
-## Info/Suggestions/Links we have gotten from asking help
-
-  * What can be done with such type of data : https://ieeexplore.ieee.org/abstract/document/7796887
-  * Classical time-series : ARIMA as a baseline
-    * With R code, a master's thesis with ARIMA (predicting hospital's patients) https://dspace.ut.ee/bitstream/handle/10062/64858/soll_hanna_liisa_msc_2019.pdf?sequence=1&isAllowed=y
-    * Seasonal ARIMA models : https://otexts.com/fpp2/seasonal-arima.html
-  * With ensembling of multiple LSTMs and MLPs - must make sure, that data is not overfitted
-  *  
-  *  
-  *  
-
-
-
-## What we found ourselves / articles / thoughts about what to try
-
-  *  Introduction to Time Series Analysis: Time-Series Forecasting Machine learning Methods & Models https://medium.com/analytics-steps/introduction-to-time-series-analysis-time-series-forecasting-machine-learning-methods-models-ecaa76a7b0e3 
-  *  How (not) to use Machine Learning for time series forecasting: Avoiding the pitfalls https://towardsdatascience.com/how-not-to-use-machine-learning-for-time-series-forecasting-avoiding-the-pitfalls-19f9d7adf424
-  *  Randomforest <3
-  *  Regression with grid and hours
-  *  Use X ja Y coordinates to predict charging need
-  *  Time series
-  *  
