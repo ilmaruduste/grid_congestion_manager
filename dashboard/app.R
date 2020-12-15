@@ -17,10 +17,9 @@ getwd()
 # verbose - report progress
 tartu_voronoi_spdf <- readOGR(
     dsn = paste0(getwd(), "/shape_files/tartu_linn_voronoi"),
-    layer = "grid_voronois_v4",
+    layer = "tartu_linn_grid_voronois_v9_ordered",
     verbose = FALSE
 )
-
 
 ev_home_locations_spdf <- readOGR(
     dsn = paste0(getwd(), "/shape_files/ev_home_locations"),
@@ -36,7 +35,7 @@ public_charger_locations_spdf <- readOGR(
 
 grid_locations_spdf <- readOGR(
     dsn = paste0(getwd(), "/shape_files/grid_locations"),
-    layer = "grid_locations_v2",
+    layer = "grid_locations_v9",
     verbose = FALSE
 )
 
@@ -57,7 +56,8 @@ names(tartu_voronoi_spdf@data)
 
 # Clean data
 # tartu_voronoi_spdf@data$predicted_combined_load <- as.numeric(as.character(tartu_voronoi_spdf@data$predicted_combined_load))
-grid_locations_spdf@data$predicted_combined_load <- as.numeric(as.character(grid_locations_spdf@data$predicted_combined_load))
+grid_locations_spdf@data$combined_load <- round(as.numeric(as.character(grid_locations_spdf@data$combined_load)),2)
+grid_locations_spdf@data$predicted_combined_load <- round(as.numeric(as.character(grid_locations_spdf@data$predicted_combined_load)),2)
 
 # tartu_voronoi_spdf@data$max_curren <- as.numeric(as.character(tartu_voronoi_spdf@data$max_curren))
 grid_locations_spdf@data$max_curren <- as.numeric(as.character(grid_locations_spdf@data$max_curren))
@@ -67,14 +67,37 @@ grid_locations_spdf@data$load_ratio_percent <- round(as.numeric(grid_locations_s
 grid_locations_spdf@data$load_ratio_percent_with_synthetic <- round(as.numeric(grid_locations_spdf@data$combined_load/grid_locations_spdf@data$max_curren*100), 2)
 
 grid_locations_spdf@data$hour <- as.numeric(as.character(grid_locations_spdf@data$hour))
+grid_locations_spdf@data$grid_id <- as.numeric(as.character(grid_locations_spdf@data$grid_id))
+tartu_voronoi_spdf@data$grid_id <- as.numeric(as.character(tartu_voronoi_spdf@data$grid_id))
 
 # Doing this since there are only 50 voronois, but I need all 
 tartu_voronoi_spdf@data <- grid_locations_spdf@data
+tartu_voronoi_spdf@data
+grid_locations_spdf@data
+# Sort by cadaster and then hour
 
-time_filtered_grids <- grid_locations_spdf
-time_filtered_grids@data <- time_filtered_grids@data %>% 
-    filter(hour == 10)
+# time_filtered_grids <- grid_locations_spdf
+# time_filtered_grids@data <- time_filtered_grids@data %>% 
+#     filter(hour == 0)
+# time_filtered_grids@data$field_1
+# time_filtered_grids@coords[time_filtered_grids@data$field_1,]
 
+# time_filtered_data <- tartu_voronoi_spdf
+# time_filtered_data@data <- time_filtered_data@data %>% 
+#     filter(hour == 8) %>% 
+#     arrange(grid_id)
+# 
+# # There's something wrong here. Try not to select all 1200 grid locations.
+# # Yep, it's selecting all 1200 pairs of coords
+# time_filtered_grids <- grid_locations_spdf
+# time_filtered_grids@data <- time_filtered_grids@data %>%
+#     filter(hour == 8) %>% 
+#     arrange(grid_id)
+# 
+# grid_locations_spdf@data 
+# time_filtered_data@data
+# time_filtered_data@data[order(time_filtered_data@data$grid_id),]
+# time_filtered_data@data$grid_id
 # Create a color palette for the map:
 mybins_tartu <- c(0, 25, 50, 75, 100, 125, 150, 200, Inf)
 mybins_load_ratio <- c(0, 25, 50, 75, 100, 125, 150, 200, Inf)
@@ -98,25 +121,6 @@ mypalette_load_ratio <- colorBin(
     bins=mybins_load_ratio
 )
 
-# Prepare the text for tooltips:
-# mytext_tartu <- paste(
-#     "<b>Electricity Grid Voronoi Polygon</b><br>",
-#     "<b>Cadaster: </b>", tartu_voronoi_spdf@data$cadaster,"<br/>", 
-#     "<b>Max Load:</b> ", tartu_voronoi_spdf@data$max_curren, " kWh<br/>", 
-#     "<b>Predicted Load:</b> ", tartu_voronoi_spdf@data$predicted_combined_load, " kWh<br/>",
-#     "<b>Load Ratio Percent:</b> ", tartu_voronoi_spdf@data$load_ratio_percent, "%", 
-#     sep="") %>%
-#     lapply(htmltools::HTML)
-# 
-# mytext_grid <- paste(
-#     "<b>Electricity Grid Station</b><br>",
-#     "<b>Cadaster:</b> ", grid_locations_spdf@data$cadaster,"<br/>", 
-#     "<b>Address:</b> ", grid_locations_spdf@data$address,"<br/>", 
-#     "<b>Max Load:</b> ", grid_locations_spdf@data$max_curren, " kWh<br/>", 
-#     "<b>Predicted Load:</b> ", grid_locations_spdf@data$predicted_combined_load, " kWh<br/>", 
-#     "<b>Load Ratio Percent:</b> ", grid_locations_spdf@data$load_ratio_percent, "%",
-#     sep="") %>%
-#     lapply(htmltools::HTML)
 
 mytext_ev_home <- paste(
     "<b>Home EV Charger</b><br>",
@@ -144,13 +148,13 @@ ui <- fluidPage(
                         sidebarLayout(
                             sidebarPanel(
                                 sliderInput("selected_hour",
-                                            strong("Select the hour of day:"),
+                                            strong("Select the Hour of Day:"),
                                             min = 0,
                                             max = 23,
-                                            value = 10)),
+                                            value = 8)),
                         
                             mainPanel(
-                                h1("Placeholder text"),
+                                h1("Interacive Electricity Grid Congestion Map"),
                                 
                                 leafletOutput("map",
                                               width = "100%",
@@ -175,43 +179,12 @@ server <- function(input, output) {
         leaflet() %>% 
             addProviderTiles(providers$Esri.WorldGrayCanvas)  %>% 
             setView( lat=58.37, lng=26.72 , zoom=13) %>%
-            
-            # addMarkers(
-            #     data = ev_home_locations_spdf,
-            #     label = mytext_ev_home,
-            #     icon = list(
-            #         iconUrl = 'https://cdn0.iconfinder.com/data/icons/smart-home/454/16-_Smart_home-512.png',
-            #         # iconUrl = 'https://cdn.iconscout.com/icon/premium/png-256-thumb/home-charger-2773008-2336757.png',
-            #         iconSize = c(30, 30)
-            #     ),
-            #     labelOptions = labelOptions( 
-            #         style = list("font-weight" = "normal", padding = "3px 8px"), 
-            #         textsize = "13px", 
-            #         direction = "auto"
-            #     ),
-            #     group = "Home EV Chargers"
-            # ) %>%
-            # 
-            # addMarkers(
-            #     data = public_charger_locations_spdf,
-            #     label = mytext_public,
-            #     icon = list(
-            #         iconUrl = 'https://www.ohmhomenow.com/wp-content/uploads/2017/08/004-car.png',
-            #         # iconUrl = 'https://static.thenounproject.com/png/45441-200.png',
-            #         iconSize = c(30, 30)
-            #     ),
-            #     labelOptions = labelOptions( 
-            #         style = list("font-weight" = "normal", padding = "3px 8px"), 
-            #         textsize = "13px", 
-            #         direction = "auto"
-            #     ),
-            #     group = "Public EV Chargers"
-            # ) %>%
-            
+    
             hideGroup("Public EV Chargers") %>%
             hideGroup("Home EV Chargers")
     })
     
+    # https://rstudio.github.io/leaflet/shiny.html
     observe({
         
         # time_filtered_data <- tartu_voronoi_spdf %>% 
@@ -219,27 +192,40 @@ server <- function(input, output) {
         
         time_filtered_data <- tartu_voronoi_spdf
         time_filtered_data@data <- time_filtered_data@data %>% 
-            filter(hour == input$selected_hour)
+            filter(hour == input$selected_hour) %>% 
+            arrange(grid_id)
         
+        # There's something wrong here. Try not to select all 1200 grid locations.
+        # Yep, it's selecting all 1200 pairs of coords
         time_filtered_grids <- grid_locations_spdf
         time_filtered_grids@data <- time_filtered_grids@data %>%
-            filter(hour == input$selected_hour)
+            filter(hour == input$selected_hour) %>% 
+            arrange(grid_id)
+        
+        # This method doesn't completely work. It doesn't select some of the grids
+        time_filtered_grids@coords <- time_filtered_grids@coords[time_filtered_grids@data$grid_id,]
             
         mytext_tartu <- paste(
             "<b>Electricity Grid Voronoi Polygon</b><br>",
             "<b>Cadaster: </b>", time_filtered_data@data$cadaster,"<br/>", 
+            "<b>Address:</b> ", time_filtered_data@data$address,"<br/>",
             "<b>Max Load:</b> ", time_filtered_data@data$max_curren, " kWh<br/>", 
-            "<b>Predicted Load:</b> ", time_filtered_data@data$predicted_combined_load, " kWh<br/>",
-            "<b>Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent, "%", 
+            "<br><b>Combined Load:</b> ", time_filtered_data@data$combined_load, " kWh<br/>", 
+            "<b>Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent_with_synthetic, "%<br/>", 
+            "<br><b>Predicted Combined Load:</b> ", time_filtered_data@data$predicted_combined_load, " kWh<br/>", 
+            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent, "%",
             sep="") %>%
             lapply(htmltools::HTML)
         
         mytext_tartu_synthetic <- paste(
             "<b>Electricity Grid Voronoi Polygon</b><br>",
             "<b>Cadaster: </b>", time_filtered_data@data$cadaster,"<br/>", 
+            "<b>Address:</b> ", time_filtered_data@data$address,"<br/>",
             "<b>Max Load:</b> ", time_filtered_data@data$max_curren, " kWh<br/>", 
-            "<b>Predicted Load:</b> ", time_filtered_data@data$predicted_combined_load, " kWh<br/>",
-            "<b>Load Ratio Percent Synthetic:</b> ", time_filtered_data@data$load_ratio_percent_with_synthetic, "%", 
+            "<br><b>Combined Load:</b> ", time_filtered_data@data$combined_load, " kWh<br/>", 
+            "<b>Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent_with_synthetic, "%<br/>", 
+            "<br><b>Predicted Combined Load:</b> ", time_filtered_data@data$predicted_combined_load, " kWh<br/>", 
+            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent, "%",
             sep="") %>%
             lapply(htmltools::HTML)
         
@@ -248,9 +234,10 @@ server <- function(input, output) {
             "<b>Cadaster:</b> ", time_filtered_grids@data$cadaster,"<br/>", 
             "<b>Address:</b> ", time_filtered_grids@data$address,"<br/>", 
             "<b>Max Load:</b> ", time_filtered_grids@data$max_curren, " kWh<br/>", 
-            "<b>Predicted Load:</b> ", time_filtered_grids@data$predicted_combined_load, " kWh<br/>", 
-            "<b>Load Ratio Percent:</b> ", time_filtered_grids@data$load_ratio_percent, "%",
-            "<b>Load Ratio Percent Synthetic:</b> ", time_filtered_data@data$load_ratio_percent_with_synthetic, "%", 
+            "<br><b>Combined Load:</b> ", time_filtered_grids@data$combined_load, " kWh<br/>", 
+            "<b>Load Ratio Percent:</b> ", time_filtered_grids@data$load_ratio_percent_with_synthetic, "%<br/>", 
+            "<br><b>Predicted Combined Load:</b> ", time_filtered_grids@data$predicted_combined_load, " kWh<br/>", 
+            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_grids@data$load_ratio_percent, "%",
             sep="") %>%
             lapply(htmltools::HTML)
         
@@ -276,7 +263,7 @@ server <- function(input, output) {
                 textsize = "13px",
                 direction = "auto"
             ),
-            group = "Predicted Load Ratio Percent - Synthetic"
+            group = "Load Ratio Percent - Synthetic"
 
         ) %>%
             
@@ -316,7 +303,27 @@ server <- function(input, output) {
                 textsize = "13px",
                 direction = "auto"
             ),
-            group = "Absolute Predicted Loads"
+            group = "Predicted Absolute Grid Loads"
+
+        ) %>% 
+            
+        # # Adding voronoi polygons - Absolute values
+        addPolygons(
+            data = time_filtered_data,
+            fillColor = ~mypalette_tartu(combined_load),
+            stroke=TRUE,
+            fillOpacity = 0.6,
+            color="white",
+            weight=2.5,
+            label = mytext_tartu,
+            highlightOptions = highlightOptions(color = "black", weight = 7,
+                                                bringToFront = TRUE),
+            labelOptions = labelOptions(
+                style = list("font-weight" = "normal", padding = "3px 8px"),
+                textsize = "13px",
+                direction = "auto"
+            ),
+            group = "Absolute Grid Loads - Synthetic"
 
         ) %>% 
             
@@ -383,13 +390,14 @@ server <- function(input, output) {
                    group = "Absolute Predicted Loads") %>%
         
         addLayersControl(
-            baseGroups = c("Predicted Load Ratio Percent", "Absolute Predicted Loads", "Predicted Load Ratio Percent - Synthetic"),
+            baseGroups = c("Load Ratio Percent - Synthetic", 
+                           "Absolute Grid Loads - Synthetic",
+                           "Predicted Load Ratio Percent", 
+                           "Predicted Absolute Grid Loads"),
             overlayGroups = c("Electricity Grid Stations", "Public EV Chargers", "Home EV Chargers"),
             options = layersControlOptions(collapsed = FALSE)
         ) 
     })
-    
-    # TODO: Get rid of 1200 grid locations, make it 50
     
 }
 
