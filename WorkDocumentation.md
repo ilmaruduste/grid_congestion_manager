@@ -1,6 +1,6 @@
 ## Who are we, why did we do the project, why is it necessary and how did we do it
 
-We are four Data Scientist students (Joonas Ariva, Sille Habakukk, Katrin Raigla and Ilmar Uduste) who in the Machinge Learning course took on the challenge to visualize and predict grid congestion. This is an important task because it can be expected that electrical vehicles are going to be bought more during the next decade. Because of that electricity consumption will increase. So that all customers who want to charge get the same pleasant experience grid overloads must be predicted and a smart charging model must be made.
+We are four Data Scientist students (Joonas Ariva, Sille Habakukk, Katrin Raigla and Ilmar Uduste) who in the Machine Learning course took on the challenge to visualize and predict grid congestion. This is an important task because it can be expected that electrical vehicles are going to be bought more during the next decade. Because of that electricity consumption will increase. So that all customers who want to charge get the same pleasant experience grid overloads must be predicted and a smart charging model must be implemented.
 
 The task was given to us by Eesti Energia (project owner and our contact person: Kristjan Eljand). We predicted grid consumptions on different 24-hour based models and on ARIMA time series.
 
@@ -37,22 +37,59 @@ ___
     * With R code, a master's thesis with ARIMA (predicting hospital's patients) https://dspace.ut.ee/bitstream/handle/10062/64858/soll_hanna_liisa_msc_2019.pdf?sequence=1&isAllowed=y
     * Seasonal ARIMA models : https://otexts.com/fpp2/seasonal-arima.html
 
-## What we tried, but did not work:
-  * Randomforests
-  * Using X and Y coordinates to predict charging need
-  
 ## What we learned in the process about the task:
   * Data Scientist usually never get enough data, so the task is never easy
 
-## Links with good information:
-  * Introduction to Time Series Analysis: Time-Series Forecasting Machine learning Methods & Models https://medium.com/analytics-steps/introduction-to-time-series-analysis-time-series-forecasting-machine-learning-methods-models-ecaa76a7b0e3
-  * How (not) to use Machine Learning for time series forecasting: Avoiding the pitfalls https://towardsdatascience.com/how-not-to-use-machine-learning-for-time-series-forecasting-avoiding-the-pitfalls-19f9d7adf424
+## Work we did
 
-## What is in the final work:
-  * We predicted grid consumptions on different 24-hour based models by feeding the models ev charging currents and baseload currents.
-  * We predicted grid consumptions on ARIMA time series by ...
+Goal: Predict EV charging current at specific hour at specific location
+1200 data points, 422 non-zero values, mean 23.131754 min 6.600000 max 121.700000
 
+### Things we tried for machine learning
+  * Fitting one model for every hour of the day (24 models)
+    * Linear regression, ElasticNet, random forest.
+    * Input parameters combinations of: number of public and home chargers, max current, baseload, coordinates.
+    * R2 values between -1..0, RMSE 9.8 .. 12.
+  * Models:
+    * Random Forest 
+    * Simple Neural Network 
+    * Linear Regression (regular, ridge and ElasticNet)
+    * AR(I)MA - autoregressive integrated moving average
+      * Combined similar charging stations into “one” to create longer time series.
+ * Features:
+    * of connected home charging stations
+    * of connected public charging stations
+    * Coordinates
+    * Hour of the day
+    * Previous values
+    * Baseload
+    * Max current
 
+### Things we used in the final work
+  * Models:
+    * Random Forest
+  * Features:
+    * of connected home charging stations
+    * of connected public charging stations
+    * Hour of the day
+
+### Smart charging
+  * Reduce current for chargers when overload was predicted.
+  * (predicted current - maximum current) / number of chargers
+  * In total there were 121 situations where smart charging should have been applied.
+  * Our models detected 68 of them sufficiently (throttled enough, or more). 
+  * Other 53 cases the throttling was either not enough, or not applied at all.
+  * Additionally 4 cases, when throttling was applied unnecessarily.
+
+### Things we tried for visualisation
+  * matplotlib - ggplot2
+  * A map is needed:
+    * geopandas and folium
+    * r and leaflet
+    
+### The thing we used for visualisation:
+  * Shiny Dashboard
+  
 ___
 
 ## Final presentation: Dec 14 - 16 guidelines
