@@ -58,6 +58,9 @@ names(tartu_voronoi_spdf@data)
 # tartu_voronoi_spdf@data$predicted_combined_load <- as.numeric(as.character(tartu_voronoi_spdf@data$predicted_combined_load))
 grid_locations_spdf@data$combined_load <- round(as.numeric(as.character(grid_locations_spdf@data$combined_load)),2)
 grid_locations_spdf@data$predicted_combined_load <- round(as.numeric(as.character(grid_locations_spdf@data$predicted_combined_load)),2)
+grid_locations_spdf@data$p_throttle <- round(as.numeric(as.character(grid_locations_spdf@data$p_throttle)),2)
+grid_locations_spdf@data$throttle <- round(as.numeric(as.character(grid_locations_spdf@data$throttle)),2)
+grid_locations_spdf@data$total_char <- round(as.numeric(as.character(grid_locations_spdf@data$total_char)))
 
 # tartu_voronoi_spdf@data$max_curren <- as.numeric(as.character(tartu_voronoi_spdf@data$max_curren))
 grid_locations_spdf@data$max_curren <- as.numeric(as.character(grid_locations_spdf@data$max_curren))
@@ -139,9 +142,12 @@ mytext_public <- paste(
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-    theme = shinytheme("lumen"), # http://rstudio.github.io/shinythemes/
+    # theme = shinytheme("lumen"), # http://rstudio.github.io/shinythemes/
+    # theme = shinytheme("paper"), # http://rstudio.github.io/shinythemes/
+    theme = shinytheme("flatly"), # http://rstudio.github.io/shinythemes/
+    # theme = shinytheme("superhero"), # http://rstudio.github.io/shinythemes/
     
-    navbarPage("Navigation Bar",
+    navbarPage("P29 - Electricity Grid Congestion",
                
                tabPanel("Interactive Map",
                         
@@ -157,17 +163,22 @@ ui <- fluidPage(
                                 h1("Interacive Electricity Grid Congestion Map"),
                                 
                                 leafletOutput("map",
-                                              width = "100%",
-                                              height = "1080px") # NB! Do not use % in height! Otherwise it will not display the map.
+                                              width = "90%",
+                                              # height = "1080px") # NB! Do not use % in height! Otherwise it will not display the map.
+                                              height = "700px") # NB! Do not use % in height! Otherwise it will not display the map.
                             ))
                         ),
                
                tabPanel("Data Explanation",
                         mainPanel(
-                            p("Siin rgi midagi")
+                            p("Hi, I should be filled with text!")
                         )),
                
-               tabPanel("About")),
+               tabPanel("About"),
+                        mainPanel(
+                            p("Created by Ilmar Uduste, Joonas Ariva, Sille Habakukk and Katrin Raigla from the Data Science curriculum at the University of Tartu."),
+                            p("This dashboard was made for a Machine Learning project in collaboration with Eesti Energia, 2020.")
+                        )),
     
     # leafletOutput("map", width = "100%", height = "100%")
     
@@ -210,10 +221,13 @@ server <- function(input, output) {
             "<b>Cadaster: </b>", time_filtered_data@data$cadaster,"<br/>", 
             "<b>Address:</b> ", time_filtered_data@data$address,"<br/>",
             "<b>Max Load:</b> ", time_filtered_data@data$max_curren, " kWh<br/>", 
+            "<b>Nr. of Connected Chargers:</b> ", time_filtered_data@data$total_char, "<br/>", 
             "<br><b>Combined Load:</b> ", time_filtered_data@data$combined_load, " kWh<br/>", 
             "<b>Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent_with_synthetic, "%<br/>", 
+            "<b>Throttle:</b> ", time_filtered_data@data$throttle, " kWh<br/>", 
             "<br><b>Predicted Combined Load:</b> ", time_filtered_data@data$predicted_combined_load, " kWh<br/>", 
-            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent, "%",
+            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent, "%<br/>",
+            "<b>Predicted Throttle:</b> ", time_filtered_data@data$p_throttle, " kWh",
             sep="") %>%
             lapply(htmltools::HTML)
         
@@ -222,10 +236,13 @@ server <- function(input, output) {
             "<b>Cadaster: </b>", time_filtered_data@data$cadaster,"<br/>", 
             "<b>Address:</b> ", time_filtered_data@data$address,"<br/>",
             "<b>Max Load:</b> ", time_filtered_data@data$max_curren, " kWh<br/>", 
+            "<b>Nr. of Connected Chargers:</b> ", time_filtered_data@data$total_char, "<br/>", 
             "<br><b>Combined Load:</b> ", time_filtered_data@data$combined_load, " kWh<br/>", 
             "<b>Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent_with_synthetic, "%<br/>", 
+            "<b>Throttle:</b> ", time_filtered_data@data$throttle, " kWh<br/>", 
             "<br><b>Predicted Combined Load:</b> ", time_filtered_data@data$predicted_combined_load, " kWh<br/>", 
-            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent, "%",
+            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_data@data$load_ratio_percent, "%<br/>",
+            "<b>Predicted Throttle:</b> ", time_filtered_data@data$p_throttle, " kWh",
             sep="") %>%
             lapply(htmltools::HTML)
         
@@ -234,10 +251,13 @@ server <- function(input, output) {
             "<b>Cadaster:</b> ", time_filtered_grids@data$cadaster,"<br/>", 
             "<b>Address:</b> ", time_filtered_grids@data$address,"<br/>", 
             "<b>Max Load:</b> ", time_filtered_grids@data$max_curren, " kWh<br/>", 
+            "<b>Nr. of Connected Chargers:</b> ", time_filtered_grids@data$total_char, "<br/>", 
             "<br><b>Combined Load:</b> ", time_filtered_grids@data$combined_load, " kWh<br/>", 
-            "<b>Load Ratio Percent:</b> ", time_filtered_grids@data$load_ratio_percent_with_synthetic, "%<br/>", 
+            "<b>Load Ratio Percent:</b> ", time_filtered_grids@data$load_ratio_percent_with_synthetic, "%<br/>",
+            "<b>Throttle:</b> ", time_filtered_data@data$throttle, " kWh<br/>",  
             "<br><b>Predicted Combined Load:</b> ", time_filtered_grids@data$predicted_combined_load, " kWh<br/>", 
-            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_grids@data$load_ratio_percent, "%",
+            "<b>Predicted Load Ratio Percent:</b> ", time_filtered_grids@data$load_ratio_percent, "%<br/>",
+            "<b>Predicted Throttle:</b> ", time_filtered_grids@data$p_throttle, " kWh",
             sep="") %>%
             lapply(htmltools::HTML)
         
