@@ -1,0 +1,10 @@
+name: dashboard
+title:
+username:
+account: ilmaru
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3403622
+bundleId: 3992127
+url: https://ilmaru.shinyapps.io/dashboard/
+when: 1608039270.3315
