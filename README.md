@@ -8,6 +8,7 @@ The task was given to us by Eesti Energia (project owner and our contact person:
 
 <b>Our presentation (Google Slides link):</b> https://docs.google.com/presentation/d/1Jpxc1xjJAhh_5dK-pYAsiQgWtm7-kd7ii3tlTGXHc4g/edit?usp=sharing
 
+![A visualization of the electricity grid congestion. Picture taken from the aformentioned dashboard.](./dashboard/preview_of_dashboard.png)
 ___
 
 *"Practical work is an essential part of learning. We offer you an opportunity to test your newly acquired machine learning skills against real-life problems."*
