@@ -1,8 +1,12 @@
 ## Who are we, why did we do the project, why is it necessary and how did we do it
 
-We are four Data Scientist students (Joonas Ariva, Sille Habakukk, Katrin Raigla and Ilmar Uduste) who in the Machine Learning course took on the challenge to visualize and predict grid congestion. This is an important task because it can be expected that electrical vehicles are going to be bought more during the next decade. Because of that electricity consumption will increase. So that all customers who want to charge get the same pleasant experience grid overloads must be predicted and a smart charging model must be implemented.
+We are four Data Science students (Joonas Ariva, Sille Habakukk, Katrin Raigla and Ilmar Uduste) who took on the challenge of visualizing and predictintg grid congestion in our Machine Learning course. This is an important task because it can be expected that electrical vehicles (EV) are going to be bought more during the next decade. Because of that, electricity consumption will increase and since all customers want to receive the same pleasant EV charging experience, grid overloads must be predicted and a smart charging model must be implemented.
 
 The task was given to us by Eesti Energia (project owner and our contact person: Kristjan Eljand). We predicted grid consumptions on different 24-hour based models and on ARIMA time series.
+
+<b>The Shiny dashboard that we built to visualize the electricity grid congestion:</b> https://ilmaru.shinyapps.io/dashboard/
+
+<b>Our presentation (Google Slides link):</b> https://docs.google.com/presentation/d/1Jpxc1xjJAhh_5dK-pYAsiQgWtm7-kd7ii3tlTGXHc4g/edit?usp=sharing
 
 ___
 
@@ -10,11 +14,11 @@ ___
 
 ___
 
-## Data, that we got
+## The provided data
  * Grid topology that reflects the capabilities of the grid at given location (the capabilities of the substations, electric lines, etc.)
  * Simulated data of 100 electric vehicles that includes information about each EV and the prediction of their charging pattern.
 
-## The tasks we were given by Eesti Energia (Kristjan Eljand):
+## The tasks given by Eesti Energia (Kristjan Eljand):
   * Prepare the datasets for analysis;
   * Develop a prediction model that forecasts the grid load in specific location based on EV charging statistics.
   * Develop a model for smart charging – a model that divides the electricity consumption of EVs such that the limits of the grid won’t be exceeded and all of the EV owners receive the similar experience.
@@ -37,10 +41,10 @@ ___
     * With R code, a master's thesis with ARIMA (predicting hospital's patients) https://dspace.ut.ee/bitstream/handle/10062/64858/soll_hanna_liisa_msc_2019.pdf?sequence=1&isAllowed=y
     * Seasonal ARIMA models : https://otexts.com/fpp2/seasonal-arima.html
 
-## What we learned in the process about the task:
+## Lessons Learned:
   * Data Scientist usually never get enough data, so the task is never easy
 
-## Work we did
+## Work Done:
 
 Goal: Predict EV charging current at specific hour at specific location
 1200 data points, 422 non-zero values, mean 23.131754 min 6.600000 max 121.700000
