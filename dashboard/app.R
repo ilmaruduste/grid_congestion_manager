@@ -17,7 +17,7 @@ getwd()
 # verbose - report progress
 tartu_voronoi_spdf <- readOGR(
     dsn = paste0(getwd(), "/shape_files/tartu_linn_voronoi"),
-    layer = "tartu_linn_grid_voronois_v9_ordered",
+    layer = "tartu_linn_grid_voronois",
     verbose = FALSE
 )
 
@@ -35,7 +35,7 @@ public_charger_locations_spdf <- readOGR(
 
 grid_locations_spdf <- readOGR(
     dsn = paste0(getwd(), "/shape_files/grid_locations"),
-    layer = "grid_locations_v9",
+    layer = "grid_locations",
     verbose = FALSE
 )
 
@@ -43,29 +43,16 @@ grid_locations_spdf <- readOGR(
 names(grid_locations_spdf@data)[names(grid_locations_spdf@data) == "predicted_"] <- "predicted_ev_load"
 names(grid_locations_spdf@data)[names(grid_locations_spdf@data) == "combined_l"] <- "combined_load"
 names(grid_locations_spdf@data)[names(grid_locations_spdf@data) == "predicte_1"] <- "predicted_combined_load"
-# grid_locations_spdf@data[is.na(grid_locations_spdf@data)] <- 0
-
-
-# names(tartu_voronoi_spdf@data)[names(tartu_voronoi_spdf@data) == "predicted_"] <- "predicted_ev_load"
-# names(tartu_voronoi_spdf@data)[names(tartu_voronoi_spdf@data) == "combined_l"] <- "combined_load"
-# names(tartu_voronoi_spdf@data)[names(tartu_voronoi_spdf@data) == "predicte_1"] <- "predicted_combined_load"
-# tartu_voronoi_spdf@data[is.na(tartu_voronoi_spdf@data)] <- 0
-
-names(grid_locations_spdf@data)
-names(tartu_voronoi_spdf@data)
 
 # Clean data
-# tartu_voronoi_spdf@data$predicted_combined_load <- as.numeric(as.character(tartu_voronoi_spdf@data$predicted_combined_load))
 grid_locations_spdf@data$combined_load <- round(as.numeric(as.character(grid_locations_spdf@data$combined_load)),2)
 grid_locations_spdf@data$predicted_combined_load <- round(as.numeric(as.character(grid_locations_spdf@data$predicted_combined_load)),2)
 grid_locations_spdf@data$p_throttle <- round(as.numeric(as.character(grid_locations_spdf@data$p_throttle)),2)
 grid_locations_spdf@data$throttle <- round(as.numeric(as.character(grid_locations_spdf@data$throttle)),2)
 grid_locations_spdf@data$total_char <- round(as.numeric(as.character(grid_locations_spdf@data$total_char)))
 
-# tartu_voronoi_spdf@data$max_curren <- as.numeric(as.character(tartu_voronoi_spdf@data$max_curren))
 grid_locations_spdf@data$max_curren <- as.numeric(as.character(grid_locations_spdf@data$max_curren))
 
-# tartu_voronoi_spdf@data$load_ratio_percent <- round(as.numeric(tartu_voronoi_spdf@data$predicted_combined_load/tartu_voronoi_spdf@data$max_curren*100), 2)
 grid_locations_spdf@data$load_ratio_percent <- round(as.numeric(grid_locations_spdf@data$predicted_combined_load/grid_locations_spdf@data$max_curren*100), 2)
 grid_locations_spdf@data$load_ratio_percent_with_synthetic <- round(as.numeric(grid_locations_spdf@data$combined_load/grid_locations_spdf@data$max_curren*100), 2)
 
@@ -73,34 +60,9 @@ grid_locations_spdf@data$hour <- as.numeric(as.character(grid_locations_spdf@dat
 grid_locations_spdf@data$grid_id <- as.numeric(as.character(grid_locations_spdf@data$grid_id))
 tartu_voronoi_spdf@data$grid_id <- as.numeric(as.character(tartu_voronoi_spdf@data$grid_id))
 
-# Doing this since there are only 50 voronois, but I need all 
+# Doing this since there are only 50 voronois, but I need to match them with all 24hr x 50 cadasters = 1200 datapoints
 tartu_voronoi_spdf@data <- grid_locations_spdf@data
-tartu_voronoi_spdf@data
-grid_locations_spdf@data
-# Sort by cadaster and then hour
 
-# time_filtered_grids <- grid_locations_spdf
-# time_filtered_grids@data <- time_filtered_grids@data %>% 
-#     filter(hour == 0)
-# time_filtered_grids@data$field_1
-# time_filtered_grids@coords[time_filtered_grids@data$field_1,]
-
-# time_filtered_data <- tartu_voronoi_spdf
-# time_filtered_data@data <- time_filtered_data@data %>% 
-#     filter(hour == 8) %>% 
-#     arrange(grid_id)
-# 
-# # There's something wrong here. Try not to select all 1200 grid locations.
-# # Yep, it's selecting all 1200 pairs of coords
-# time_filtered_grids <- grid_locations_spdf
-# time_filtered_grids@data <- time_filtered_grids@data %>%
-#     filter(hour == 8) %>% 
-#     arrange(grid_id)
-# 
-# grid_locations_spdf@data 
-# time_filtered_data@data
-# time_filtered_data@data[order(time_filtered_data@data$grid_id),]
-# time_filtered_data@data$grid_id
 # Create a color palette for the map:
 mybins_tartu <- c(0, 25, 50, 75, 100, 125, 150, 200, Inf)
 mybins_load_ratio <- c(0, 25, 50, 75, 100, 125, 150, 200, Inf)
@@ -124,7 +86,7 @@ mypalette_load_ratio <- colorBin(
     bins=mybins_load_ratio
 )
 
-
+# Create text labels for public and home EV chargers
 mytext_ev_home <- paste(
     "<b>Home EV Charger</b><br>",
     "<b>Cadaster:</b> ", ev_home_locations_spdf@data$cadaster,"<br/>", 
@@ -164,8 +126,8 @@ ui <- fluidPage(
                                 
                                 leafletOutput("map",
                                               width = "90%",
-                                              # height = "1080px") # NB! Do not use % in height! Otherwise it will not display the map.
-                                              height = "700px") # NB! Do not use % in height! Otherwise it will not display the map.
+                                              height = "1080px") # NB! Do not use % in height! Otherwise it will not display the map.
+                                              # height = "700px") # NB! Do not use % in height! Otherwise it will not display the map.
                             ))
                         ),
                
