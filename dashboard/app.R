@@ -115,11 +115,22 @@ ui <- fluidPage(
                         
                         sidebarLayout(
                             sidebarPanel(
+                                p("In this interactive dashboard, it is possible to display both synthetic and predicted data for electricity grid congestion. 
+                                ", tags$b("For predicted data, only the testset of grid locations will be shown"), ", since there is no point in predicting grid loads for training data.
+                                  This means that whenever there's an NA value, it's most likely a datapoint from the trainingset and therefore doesn't have that value."),
+                                p("There is also the possibility of visualizing the locations of ", tags$b("Public and Home EV chargers"), " by checking the respective boxes. 
+                                  Electricity Grid Stations are shown on the map by default."),
                                 sliderInput("selected_hour",
                                             strong("Select the Hour of Day:"),
                                             min = 0,
                                             max = 23,
-                                            value = 8)),
+                                            value = 8),
+                                p("This slider allows you to specify ", tags$b("the hour of day for visualizing grid loads"), "."),
+                                p("The Load Ratio for grids is calculated by taking the ratio of the predicted load and the maximum load for that particular hour. 
+                                  ", tags$b("NB!"), "Maximum loads are constant and do not change by hour."),
+                                p("The geometrical polygons for the areas surrounding the grids were generated in QGIS via the Voronoi polygon method, 
+                                  since we were allowed to assume that the EV charging stations would connect to the nearest possible electricity grid station.")),
+                                
                         
                             mainPanel(
                                 h1("Interacive Electricity Grid Congestion Map"),
@@ -127,27 +138,28 @@ ui <- fluidPage(
                                 leafletOutput("map",
                                               width = "90%",
                                               height = "1080px") # NB! Do not use % in height! Otherwise it will not display the map.
-                                              # height = "700px") # NB! Do not use % in height! Otherwise it will not display the map.
+
+                            
+                            
+                            
                             ))
                         ),
                
-               tabPanel("Data Explanation",
-                        mainPanel(
-                            p("Hi, I should be filled with text!")
-                        )),
-               
                tabPanel("About"),
                         mainPanel(
-                            p("Created by Ilmar Uduste, Joonas Ariva, Sille Habakukk and Katrin Raigla from the Data Science curriculum at the University of Tartu."),
-                            p("This dashboard was made for a Machine Learning project in collaboration with Eesti Energia, 2020.")
-                        )),
+                            p(tags$b("Created by Ilmar Uduste, Joonas Ariva, Sille Habakukk and Katrin Raigla"), " from the Data Science curriculum at the University of Tartu."),
+                            p("This dashboard was made for a Machine Learning project in collaboration with Eesti Energia, 2020."),
+                            p(tags$a("GitHub Repo", href="https://ilmaru.shinyapps.io/dashboard/")),
+                            p(tags$a("Our presentation (Google Slides link)", href="https://docs.google.com/presentation/d/1Jpxc1xjJAhh_5dK-pYAsiQgWtm7-kd7ii3tlTGXHc4g/edit?usp=sharing")),
+                        )))
     
     # leafletOutput("map", width = "100%", height = "100%")
     
-)
 
-# Define server logic required to draw a histogram
+# Define server logic required to draw a Leaflet plot
 server <- function(input, output) {
+    
+    # Initializing Leaflet map
     output$map <- renderLeaflet({
         leaflet() %>% 
             addProviderTiles(providers$Esri.WorldGrayCanvas)  %>% 
@@ -160,16 +172,13 @@ server <- function(input, output) {
     # https://rstudio.github.io/leaflet/shiny.html
     observe({
         
-        # time_filtered_data <- tartu_voronoi_spdf %>% 
-            # filter("hour" == input$selected_hour)
-        
+        # Filtering out specific voronoi data based on hour
         time_filtered_data <- tartu_voronoi_spdf
         time_filtered_data@data <- time_filtered_data@data %>% 
             filter(hour == input$selected_hour) %>% 
             arrange(grid_id)
         
-        # There's something wrong here. Try not to select all 1200 grid locations.
-        # Yep, it's selecting all 1200 pairs of coords
+
         time_filtered_grids <- grid_locations_spdf
         time_filtered_grids@data <- time_filtered_grids@data %>%
             filter(hour == input$selected_hour) %>% 
